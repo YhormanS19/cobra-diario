@@ -1,18 +1,31 @@
 import "./Login.css";
-import { Link } from "react-router-dom";
-import { alertaGeneral, alertaRedireccion } from "../utils/alertas";
+import { Link, useNavigate } from "react-router-dom";
+import { alertaGeneral, alertaRedireccion } from "../../utils/alertas";
 import { useState } from "react";
+import { generarToken } from "../../utils/generadores";
+import { guardarLocalStorage } from "../../utils/local-storage";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPasword] = useState("");
+  let redirection = useNavigate();
   function iniciarSesion() {
-    alertaGeneral("Probando", "Esto es una prueba", "info");
+    if (email == "correo@correo.com" && password == "root") {
+      let token = generarToken();
+      guardarLocalStorage("token", token);
+      alertaRedireccion("Bienvenido", "success", "/admin", redirection);
+    } else {
+      alertaGeneral("Error", "Usuario y/o contraseña incorrecto", "error");
+    }
   }
   return (
     <form className="form">
       <p className="form-title">Iniciar Sesión</p>
       <div className="input-container">
-        <input onChange={(e)=> setEmail(e.target.value)} placeholder="Enter email" type="email" />
+        <input
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter email"
+          type="email"
+        />
         <span>
           <svg
             stroke="currentColor"
@@ -30,7 +43,11 @@ const Login = () => {
         </span>
       </div>
       <div className="input-container">
-        <input onChange={(e)=> setPasword(e.target.value)} placeholder="Enter password" type="password" />
+        <input
+          onChange={(e) => setPasword(e.target.value)}
+          placeholder="Enter password"
+          type="password"
+        />
         <span>
           <svg
             stroke="currentColor"
