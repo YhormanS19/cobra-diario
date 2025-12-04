@@ -23,12 +23,25 @@ const Login = () => {
     getUsuarios();
   }, []);
 
+  function buscarUsuario() {
+    let usuario = usuarios.find(
+      (item) => item.email == email && item.password == password
+    );
+    return usuario;
+  }
+
   let redirection = useNavigate();
   function iniciarSesion() {
-    if (email == "correo@correo.com" && password == "root") {
+    let usuario = buscarUsuario();
+    if (usuario) {
       let token = generarToken();
       guardarLocalStorage("token", token);
-      alertaRedireccion("Bienvenido", "success", "/admin", redirection);
+      guardarLocalStorage("usuario", usuario);
+      if (usuario.role == "admin") {
+        alertaRedireccion("Bienvenido", "success", "/admin", redirection);
+      } else {
+        alertaRedireccion("Bienvenido", "success", "/socio", redirection);
+      }
     } else {
       alertaGeneral("Error", "Usuario y/o contraseña incorrecto", "error");
     }
